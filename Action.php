@@ -37,6 +37,19 @@ class QPlayer2_Action extends Typecho_Widget implements Widget_Interface_Do
             return;
         }
 
+        if ($do == 'keepalive') {
+            /* 前台页面异步触发的 cookie 保活：不依赖播放行为，任何访客访问页面即可触发。
+               CookieKeeper 内部有 24h 限频（先落时间戳再请求），恶意刷本接口也不会放大上游调用 */
+            $config = Config::getConfig();
+            $cookie = $config->cookie;
+            if (!empty($cookie)) {
+                require_once 'libs/CookieKeeper.php';
+                \QPlayer\CookieKeeper::keepAlive($config);
+            }
+            http_response_code(204);
+            die();
+        }
+
         $server = $request->get('server');
         $type = $request->get('type');
         $id = $request->get('id');

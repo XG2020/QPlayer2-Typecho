@@ -269,6 +269,18 @@ JSON 格式的数组，具体属性请看 <a href="https://github.com/moeshin/QP
         plugin.setList(<?php $config->list(); ?>);
         q.setColor("<?php $config->color(); ?>");
     });
+    /* 网易云 cookie 保活：不依赖播放行为，任何页面访问都异步 ping 一次 keepalive。
+       前端 6h 节流，服务端 CookieKeeper 再按 24h 限频，对页面性能无影响 */
+    try {
+        var kaKey = 'QPlayer2KeepAlive';
+        var kaLast = +localStorage.getItem(kaKey) || 0;
+        if (Date.now() - kaLast > 216e5) {
+            localStorage.setItem(kaKey, Date.now());
+            var kaUrl = "<?php echo Typecho_Common::url('action/QPlayer2', Helper::options()->index); ?>?do=keepalive";
+            if (navigator.sendBeacon) navigator.sendBeacon(kaUrl);
+            else fetch(kaUrl, {method: 'POST', keepalive: true}).catch(function () {});
+        }
+    } catch (e) {}
 })();
 </script>
 <?php
