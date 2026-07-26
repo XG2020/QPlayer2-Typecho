@@ -242,8 +242,11 @@ JSON 格式的数组，具体属性请看 <a href="https://github.com/moeshin/QP
         $config = Config::getConfig();
         $general = new General_Config($config);
         if ($general->getBool('cdn')) {
-            $info = Typecho_Plugin::parseInfo(__FILE__);
-            $prefix = 'https://cdn.jsdelivr.net/gh/moeshin/QPlayer2-Typecho@' . $info['version'] . '/assets';
+            /* 指向自建 fork 仓库 XG2020/QPlayer2-Typecho（含本地已做的 js/css 修改）。
+               该仓库暂无 release tag，只有 main 分支，故用 @main 引用；
+               改动 assets 后需到 https://purge.jsdelivr.net/gh/XG2020/QPlayer2-Typecho@main/ 刷新缓存，
+               或打 tag 后把 @main 换成 @版本号获得永久缓存 */
+            $prefix = 'https://cdn.jsdelivr.net/gh/XG2020/QPlayer2-Typecho@main/assets';
         } else {
             $prefix = Typecho_Common::url('QPlayer2/assets', Helper::options()->pluginUrl);
         }
