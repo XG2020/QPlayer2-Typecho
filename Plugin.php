@@ -121,8 +121,10 @@ class QPlayer2_Plugin extends Typecho_Widget implements Typecho_Plugin_Interface
 }]',
             _t('歌曲列表'),
             _t('
-JSON 格式的数组，具体属性请看 <a href="https://github.com/moeshin/QPlayer2#list-item">这里</a><br>
-您也可以添加，例如：私人雷达<br>
+支持 JSON 数组，也兼容单个 JSON 对象；具体属性请看 <a href="https://github.com/moeshin/QPlayer2#list-item">这里</a><br>
+推荐写成数组，例如：<br>
+<code>[{"server": "netease", "type": "playlist", "id": "3136952023"}]</code><br>
+也兼容直接写单个对象，例如：私人雷达<br>
 <code>{"server": "netease", "type": "playlist", "id": "3136952023"}</code><br>
 来引入第三方资源，此功能基于 <a href="https://github.com/metowolf/Meting">Meting</a><br>
 <code>server</code>：netease、tencent、baidu、xiami、kugou<br>
@@ -140,6 +142,12 @@ JSON 格式的数组，具体属性请看 <a href="https://github.com/moeshin/QP
 填入此处来获取云盘等付费资源，听歌将不会计入下载次数<br>
 <strong>如果不知道这是什么意思，忽略即可</strong>
 ')
+        ));
+        /* 内部保活时间戳也会写入插件配置；补一个隐藏字段，避免后台设置页回填时找不到对应 input。 */
+        $form->addInput(new Typecho_Widget_Helper_Form_Element_Hidden(
+            'cookieRefreshedAt',
+            null,
+            '0'
         ));
         $form->addInput(new Typecho_Widget_Helper_Form_Element_Radio(
             'cacheType',
@@ -265,8 +273,12 @@ JSON 格式的数组，具体属性请看 <a href="https://github.com/moeshin/QP
     q.$(function () {
         var q = QPlayer;
         var plugin = q.plugin;
+        var list = <?php $config->list(); ?>;
+        if (list && !Array.isArray(list)) {
+            list = [list];
+        }
         plugin.api = "<?php echo Typecho_Common::url('action/QPlayer2', Helper::options()->index); ?>";
-        plugin.setList(<?php $config->list(); ?>);
+        plugin.setList(list || []);
         q.setColor("<?php $config->color(); ?>");
     });
     /* 网易云 cookie 保活：不依赖播放行为，任何页面访问都异步 ping 一次 keepalive。

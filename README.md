@@ -32,7 +32,7 @@
 | 在播放时暂停其他媒体 / 在其他媒体播放时暂停 | 与页面上其他音视频的互斥策略 |
 | 主题颜色 | 播放器主色，默认 `#EE1122` |
 | 默认音质 | 128K / 192K / 320K |
-| 歌曲列表 | JSON 数组，支持直链歌曲与第三方平台资源（基于 [Meting](https://github.com/metowolf/Meting)） |
+| 歌曲列表 | 支持 JSON 数组，也兼容单个 JSON 对象；可填写直链歌曲与第三方平台资源（基于 [Meting](https://github.com/metowolf/Meting)） |
 | 网易云音乐 Cookie | 填入包含 `MUSIC_U` 的 cookie 可播放云盘/会员资源，填入后自动续期接管 |
 | 缓存类型 | 无 / 数据库 / Memcached / Redis，缓存歌曲解析结果降低服务器压力 |
 
@@ -51,7 +51,7 @@
 ]
 ```
 
-`server` 支持：`netease`、`tencent`、`baidu`、`xiami`、`kugou`；`type` 支持：`playlist`、`song`、`album`、`artist`。
+推荐优先使用数组格式；`server` 支持：`netease`、`tencent`、`baidu`、`xiami`、`kugou`；`type` 支持：`playlist`、`song`、`album`、`artist`。
 
 ### 网易云 Cookie 自动续期
 
